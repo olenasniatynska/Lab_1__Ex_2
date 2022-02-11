@@ -6,17 +6,15 @@ from geopy.geocoders import Nominatim
 import math
 
 parser = argparse.ArgumentParser()
-parser.add_argument("year", default = '2015')
-parser.add_argument("latitude", default = 49.83826)
-parser.add_argument("longitude", default = 24.02324)
-parser.add_argument("path", default = r'C:\Users\Оленка\Music\locations.list')
+parser.add_argument("year", type = str)
+parser.add_argument("latitude", type = float)
+parser.add_argument("longitude", type = float)
+parser.add_argument("path")
 args = parser.parse_args()
 
 def read_file(file_path,year):
     """
     Return names and cities for films of the year
-    >>> 
-
     """
     loclist = []
     with open(file_path,'r',encoding='unicode_escape') as file:
@@ -52,7 +50,6 @@ def get_location_of_films(loclist):
             pass
     return coordlist
 
-
 def find_distance(coord1, coord2):
     """
     Return distance between 2 points
@@ -71,7 +68,10 @@ def find_distance(coord1, coord2):
     return round(distance,5)
 
 
-def find_near_points(latitude, longitude):
+def find_near_points(latitude,longitude):
+    """
+    Return the list of names and coordinates of nearest points
+    """
     distan_dict = dict()
     all_films = get_location_of_films(read_file(args.path,args.year))
     for i in all_films:
@@ -92,6 +92,9 @@ def find_near_points(latitude, longitude):
 
 
 def make_film_map():
+    """
+    Creates web map
+    """
     all_coord = find_near_points(args.latitude, args.longitude)
     map = folium.Map(location=[60.25, 24.8], zoom_start=5, control_scale=True)
     output = "film_map.html"
